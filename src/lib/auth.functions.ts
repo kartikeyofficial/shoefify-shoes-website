@@ -1,29 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { setCookie, getCookie, deleteCookie } from "@tanstack/react-start/server";
 import { z } from "zod";
-import nodemailer from "nodemailer";
-import jwt from "jsonwebtoken";
-import { connectDB } from "./db";
-import { User } from "./models";
+import { connectDB } from "./db.server";
+import { User } from "./models.server";
 import { getServerUser } from "./auth.server";
-
-let transporter: nodemailer.Transporter | null = null;
-function getTransporter() {
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.NODEMAILER_EMAIL,
-        pass: process.env.NODEMAILER_PASSWORD,
-      },
-    });
-  }
-  return transporter;
-}
-
-function getJwtSecret() {
-  return process.env.JWT_SECRET || "fallback_secret_please_change_in_production";
-}
 
 export const sendOtp = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ email: z.string().email() }).parse(input))
@@ -50,7 +30,16 @@ export const sendOtp = createServerFn({ method: "POST" })
     await user.save();
 
     // Send email
-    await getTransporter().sendMail({
+    const nodemailer = (await import("nodemailer")).default;
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.NODEMAILER_EMAIL,
+        pass: process.env.NODEMAILER_PASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
       from: `"Shoefify" <${process.env.NODEMAILER_EMAIL}>`,
       to: email,
       subject: "Your Shoefify Verification Code",
@@ -82,9 +71,11 @@ export const verifyOtp = createServerFn({ method: "POST" })
     await user.save();
 
     // Generate JWT
+    const jwt = (await import("jsonwebtoken")).default;
+    const jwtSecret = process.env.JWT_SECRET || "fallback_secret_please_change_in_production";
     const token = jwt.sign(
       { userId: user._id.toString(), email: user.email, role: user.role },
-      getJwtSecret(),
+      jwtSecret,
       { expiresIn: "30d" }
     );
 
@@ -117,7 +108,9 @@ export const updateProfile = createServerFn({ method: "POST" })
       const token = getCookie("auth_token");
       if (!token) throw new Error("Unauthorized");
       
-      const decoded = jwt.verify(token, getJwtSecret()) as { userId: string };
+      const jwt = (await import("jsonwebtoken")).default;
+      const jwtSecret = process.env.JWT_SECRET || "fallback_secret_please_change_in_production";
+      const decoded = jwt.verify(token, jwtSecret) as { userId: string };
       await connectDB();
       await User.findByIdAndUpdate(decoded.userId, data);
       return { success: true };

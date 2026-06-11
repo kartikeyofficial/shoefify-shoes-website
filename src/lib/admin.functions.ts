@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { connectDB } from "./db";
-import { Product, Order, SupportMessage } from "./models";
+import { connectDB } from "./db.server";
+import { Product, Order, SupportMessage } from "./models.server";
 import { getServerUser } from "./auth.server";
 import { serialize } from "./utils";
 

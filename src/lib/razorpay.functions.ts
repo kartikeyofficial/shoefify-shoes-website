@@ -1,8 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createHmac, timingSafeEqual } from "crypto";
-import { connectDB } from "./db";
-import { Order } from "./models";
+import { connectDB } from "./db.server";
+import { Order } from "./models.server";
 import { getServerUser } from "./auth.server";
 
 export const getRazorpayKeyId = createServerFn({ method: "GET" }).handler(async () => {
@@ -78,6 +77,7 @@ export const verifyRazorpayPayment = createServerFn({ method: "POST" })
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
     if (!keySecret) throw new Error("Razorpay not configured");
 
+    const { createHmac, timingSafeEqual } = await import("crypto");
     const expected = createHmac("sha256", keySecret)
       .update(`${data.razorpayOrderId}|${data.razorpayPaymentId}`)
       .digest("hex");

@@ -1,7 +1,7 @@
 import { getCookie } from "@tanstack/react-start/server";
 import jwt from "jsonwebtoken";
-import { connectDB } from "./db";
-import { User } from "./models";
+import { connectDB } from "./db.server";
+import { User } from "./models.server";
 
 export async function getServerUser() {
   try {
