@@ -7,22 +7,28 @@ import { connectDB } from "./db";
 import { User } from "./models";
 import { getServerUser } from "./auth.server";
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_please_change_in_production";
-const MONGODB_URI = process.env.MONGODB_URI;
+let transporter: nodemailer.Transporter | null = null;
+function getTransporter() {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.NODEMAILER_EMAIL,
+        pass: process.env.NODEMAILER_PASSWORD,
+      },
+    });
+  }
+  return transporter;
+}
 
-// Initialize Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.NODEMAILER_EMAIL,
-    pass: process.env.NODEMAILER_PASSWORD,
-  },
-});
+function getJwtSecret() {
+  return process.env.JWT_SECRET || "fallback_secret_please_change_in_production";
+}
 
 export const sendOtp = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ email: z.string().email() }).parse(input))
   .handler(async ({ data }) => {
-    if (!MONGODB_URI) throw new Error("Database not configured. Please add MONGODB_URI to .env");
+    if (!process.env.MONGODB_URI) throw new Error("Database not configured. Please add MONGODB_URI to .env");
     if (!process.env.NODEMAILER_EMAIL || !process.env.NODEMAILER_PASSWORD) {
       throw new Error("Email provider not configured. Please add NODEMAILER credentials to .env");
     }
@@ -44,7 +50,7 @@ export const sendOtp = createServerFn({ method: "POST" })
     await user.save();
 
     // Send email
-    await transporter.sendMail({
+    await getTransporter().sendMail({
       from: `"Shoefify" <${process.env.NODEMAILER_EMAIL}>`,
       to: email,
       subject: "Your Shoefify Verification Code",
@@ -78,7 +84,7 @@ export const verifyOtp = createServerFn({ method: "POST" })
     // Generate JWT
     const token = jwt.sign(
       { userId: user._id.toString(), email: user.email, role: user.role },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: "30d" }
     );
 
@@ -111,7 +117,7 @@ export const updateProfile = createServerFn({ method: "POST" })
       const token = getCookie("auth_token");
       if (!token) throw new Error("Unauthorized");
       
-      const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
+      const decoded = jwt.verify(token, getJwtSecret()) as { userId: string };
       await connectDB();
       await User.findByIdAndUpdate(decoded.userId, data);
       return { success: true };

@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
 let isConnected = false;
 
 export const connectDB = async () => {
@@ -9,6 +7,7 @@ export const connectDB = async () => {
     return;
   }
   
+  const MONGODB_URI = process.env.MONGODB_URI;
   if (!MONGODB_URI) {
     console.error("MONGODB_URI is not defined in the environment variables.");
     throw new Error("MONGODB_URI is required");

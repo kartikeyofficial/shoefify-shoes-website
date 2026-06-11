@@ -3,10 +3,9 @@ import jwt from "jsonwebtoken";
 import { connectDB } from "./db";
 import { User } from "./models";
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_please_change_in_production";
-
 export async function getServerUser() {
   try {
+    const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_please_change_in_production";
     await connectDB();
     const token = getCookie("auth_token");
     if (!token) return null;
