@@ -53,7 +53,7 @@ const OrderItemSchema = new mongoose.Schema({
 const OrderSchema = new mongoose.Schema({
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   order_number: { type: String, required: true, unique: true },
-  status: { type: String, enum: ["pending", "processing", "shipped", "delivered", "cancelled"], default: "pending" },
+  status: { type: String, enum: ["pending", "packed", "shipped", "out_for_delivery", "delivered", "cancelled"], default: "pending" },
   total: { type: Number, required: true },
   items: [OrderItemSchema],
   shipping_address: { type: Object },

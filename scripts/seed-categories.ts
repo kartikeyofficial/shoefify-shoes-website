@@ -18,7 +18,7 @@ const categories = [
   { name: 'Sneakers', slug: 'sneakers', sort_order: 2 },
   { name: 'Formal', slug: 'formal', sort_order: 3 },
   { name: 'Sports', slug: 'sports', sort_order: 4 },
-  { name: 'Kid', slug: 'kid', sort_order: 5 },
+  { name: 'Kids', slug: 'kids', sort_order: 5 },
 ];
 
 async function seed() {
