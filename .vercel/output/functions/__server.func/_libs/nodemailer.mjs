@@ -14,7 +14,28 @@ import require$$0$6 from "dns";
 import require$$1$3 from "crypto";
 import require$$1$4 from "tls";
 import require$$1$5 from "child_process";
-var nodemailer$1 = {};
+function _mergeNamespaces(n, m) {
+  for (var i = 0; i < m.length; i++) {
+    const e = m[i];
+    if (typeof e !== "string" && !Array.isArray(e)) {
+      for (const k in e) {
+        if (k !== "default" && !(k in n)) {
+          const d = Object.getOwnPropertyDescriptor(e, k);
+          if (d) {
+            Object.defineProperty(n, k, d.get ? d : {
+              enumerable: true,
+              get: function() {
+                return e[k];
+              }
+            });
+          }
+        }
+      }
+    }
+  }
+  return Object.freeze(n);
+}
+var nodemailer$2 = {};
 var shared = { exports: {} };
 var fetch = { exports: {} };
 var cookies;
@@ -11020,7 +11041,7 @@ function requireSesTransport() {
 }
 var hasRequiredNodemailer;
 function requireNodemailer() {
-  if (hasRequiredNodemailer) return nodemailer$1;
+  if (hasRequiredNodemailer) return nodemailer$2;
   hasRequiredNodemailer = 1;
   const Mailer = requireMailer();
   const shared2 = requireShared();
@@ -11038,7 +11059,7 @@ function requireNodemailer() {
   const ETHEREAL_API_KEY = (process.env.ETHEREAL_API_KEY || "").replace(/\s*/g, "") || null;
   const ETHEREAL_CACHE = ["true", "yes", "y", "1"].includes((process.env.ETHEREAL_CACHE || "yes").toString().trim().toLowerCase());
   let testAccount = false;
-  nodemailer$1.createTransport = function(transporter, defaults) {
+  nodemailer$2.createTransport = function(transporter, defaults) {
     let options;
     if (
       // provided transporter is a configuration object, not transporter plugin
@@ -11074,7 +11095,7 @@ function requireNodemailer() {
     }
     return new Mailer(transporter, options, defaults);
   };
-  nodemailer$1.createTestAccount = function(apiUrl, callback) {
+  nodemailer$2.createTestAccount = function(apiUrl, callback) {
     let promise;
     if (!callback && typeof apiUrl === "function") {
       callback = apiUrl;
@@ -11135,7 +11156,7 @@ function requireNodemailer() {
     });
     return promise;
   };
-  nodemailer$1.getTestMessageUrl = function(info) {
+  nodemailer$2.getTestMessageUrl = function(info) {
     if (!info || !info.response) {
       return false;
     }
@@ -11150,10 +11171,14 @@ function requireNodemailer() {
     }
     return false;
   };
-  return nodemailer$1;
+  return nodemailer$2;
 }
 var nodemailerExports = requireNodemailer();
 const nodemailer = /* @__PURE__ */ getDefaultExportFromCjs(nodemailerExports);
+const nodemailer$1 = /* @__PURE__ */ _mergeNamespaces({
+  __proto__: null,
+  default: nodemailer
+}, [nodemailerExports]);
 export {
-  nodemailer as n
+  nodemailer$1 as n
 };

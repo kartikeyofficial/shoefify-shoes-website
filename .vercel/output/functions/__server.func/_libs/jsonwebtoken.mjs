@@ -10,6 +10,27 @@ import { r as requireLodash_isnumber } from "./lodash.isnumber.mjs";
 import { r as requireLodash_isplainobject } from "./lodash.isplainobject.mjs";
 import { r as requireLodash_isstring } from "./lodash.isstring.mjs";
 import { r as requireLodash_once } from "./lodash.once.mjs";
+function _mergeNamespaces(n, m) {
+  for (var i = 0; i < m.length; i++) {
+    const e = m[i];
+    if (typeof e !== "string" && !Array.isArray(e)) {
+      for (const k in e) {
+        if (k !== "default" && !(k in n)) {
+          const d = Object.getOwnPropertyDescriptor(e, k);
+          if (d) {
+            Object.defineProperty(n, k, d.get ? d : {
+              enumerable: true,
+              get: function() {
+                return e[k];
+              }
+            });
+          }
+        }
+      }
+    }
+  }
+  return Object.freeze(n);
+}
 var decode;
 var hasRequiredDecode;
 function requireDecode() {
@@ -656,6 +677,11 @@ function requireJsonwebtoken() {
 }
 var jsonwebtokenExports = requireJsonwebtoken();
 const jwt = /* @__PURE__ */ getDefaultExportFromCjs(jsonwebtokenExports);
+const index = /* @__PURE__ */ _mergeNamespaces({
+  __proto__: null,
+  default: jwt
+}, [jsonwebtokenExports]);
 export {
+  index as i,
   jwt as j
 };

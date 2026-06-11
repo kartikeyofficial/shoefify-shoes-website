@@ -1,3 +1,4 @@
+import { createRequire } from "module";
 let lastCapturedError;
 const TTL_MS = 5e3;
 function record(error) {
@@ -50,10 +51,13 @@ function renderErrorPage() {
   </body>
 </html>`;
 }
+if (typeof globalThis.require === "undefined") {
+  globalThis.require = createRequire(import.meta.url);
+}
 let serverEntryPromise;
 async function getServerEntry() {
   if (!serverEntryPromise) {
-    serverEntryPromise = import("./server-CutrnPlu.mjs").then((n) => n.f).then(
+    serverEntryPromise = import("./server-N1mLFSER.mjs").then((n) => n.f).then(
       (m) => m.default ?? m
     );
   }

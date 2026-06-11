@@ -1,3 +1,7 @@
+import { createRequire } from "module";
+if (typeof globalThis.require === "undefined") {
+  globalThis.require = createRequire(import.meta.url);
+}
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
