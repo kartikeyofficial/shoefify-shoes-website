@@ -10,21 +10,36 @@ export const getMyOrders = createServerFn({ method: "GET" }).handler(async () =>
   const user = await getServerUser();
   if (!user) throw new Error("Unauthorized");
 
-  const orders = await Order.find({ user_id: user.id }).sort({ createdAt: -1 }).lean();
-  return serialize(orders.map(o => ({ ...o, _id: o._id.toString(), id: o._id.toString() })));
+  const orders = await Order.find({ user_id: user.id })
+    .sort({ createdAt: -1 })
+    .populate("items.product_id", "images slug")
+    .lean();
+
+  const mappedOrders = orders.map((o: any) => {
+    const itemsWithImagesAndSlug = o.items.map((item: any) => ({
+      ...item,
+      image: item.product_id && item.product_id.images && item.product_id.images.length > 0 ? item.product_id.images[0] : null,
+      product_slug: item.product_id ? item.product_id.slug : null,
+      product_id: item.product_id ? item.product_id._id?.toString() : null
+    }));
+    return { ...o, items: itemsWithImagesAndSlug, _id: o._id.toString(), id: o._id.toString() };
+  });
+
+  return serialize(mappedOrders);
 });
 
 export const getOrder = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ order_number: z.string() }).parse(input))
   .handler(async ({ data }) => {
     await connectDB();
-    const order = await Order.findOne({ order_number: data.order_number }).populate("items.product_id", "images").lean();
+    const order = await Order.findOne({ order_number: data.order_number }).populate("items.product_id", "images slug").lean();
     if (!order) return null;
     
     // Map the populated product images so the frontend can easily access them
     const itemsWithImages = order.items.map((item: any) => ({
       ...item,
       image: item.product_id && item.product_id.images && item.product_id.images.length > 0 ? item.product_id.images[0] : null,
+      product_slug: item.product_id ? item.product_id.slug : null,
       product_id: item.product_id ? item.product_id._id.toString() : null
     }));
 
@@ -36,12 +51,13 @@ export const getAdminOrders = createServerFn({ method: "GET" }).handler(async ()
   const user = await getServerUser();
   if (!user || user.role !== "admin") throw new Error("Unauthorized");
 
-  const orders = await Order.find().sort({ createdAt: -1 }).populate("items.product_id", "images").lean();
+  const orders = await Order.find().sort({ createdAt: -1 }).populate("items.product_id", "images slug").lean();
   
   const mappedOrders = orders.map((o: any) => {
     const itemsWithImages = o.items.map((item: any) => ({
       ...item,
       image: item.product_id && item.product_id.images && item.product_id.images.length > 0 ? item.product_id.images[0] : null,
+      product_slug: item.product_id ? item.product_id.slug : null,
       product_id: item.product_id ? item.product_id._id?.toString() : null
     }));
     return { ...o, items: itemsWithImages, _id: o._id.toString(), id: o._id.toString() };

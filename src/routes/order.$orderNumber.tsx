@@ -19,6 +19,7 @@ interface Item {
   price: number;
   size: string | null;
   image?: string | null;
+  product_slug?: string | null;
 }
 
 interface Order {
@@ -138,14 +139,32 @@ function OrderDetailPage() {
             <div className="mt-4 divide-y divide-border">
               {items.map((i, idx) => (
                 <div key={idx} className="flex items-center gap-4 py-4">
-                  {i.image ? (
-                    <img src={i.image} alt={i.product_name} className="size-20 object-cover" />
+                  {i.product_slug ? (
+                    <Link to="/product/$slug" params={{ slug: i.product_slug }} className="shrink-0 block">
+                      {i.image ? (
+                        <img src={i.image} alt={i.product_name} className="size-20 object-cover" />
+                      ) : (
+                        <div className="size-20 bg-muted" />
+                      )}
+                    </Link>
                   ) : (
-                    <div className="size-20 bg-muted" />
+                    <div className="shrink-0">
+                      {i.image ? (
+                        <img src={i.image} alt={i.product_name} className="size-20 object-cover" />
+                      ) : (
+                        <div className="size-20 bg-muted" />
+                      )}
+                    </div>
                   )}
                   <div className="flex-1">
-                    <div className="font-medium">{i.product_name}</div>
-                    <div className="text-xs text-muted-foreground">
+                    {i.product_slug ? (
+                      <Link to="/product/$slug" params={{ slug: i.product_slug }} className="font-medium hover:underline block">
+                        {i.product_name}
+                      </Link>
+                    ) : (
+                      <div className="font-medium">{i.product_name}</div>
+                    )}
+                    <div className="text-xs text-muted-foreground mt-1">
                       {i.size && <>Size {i.size} · </>}Qty {i.quantity}
                     </div>
                   </div>
