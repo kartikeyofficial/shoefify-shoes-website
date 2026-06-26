@@ -13,7 +13,7 @@ Step(3): Install NodeMailer for Email Otp system
         npm install nodemailer
 Step(4): Set up the Environment Variable Also (.env)
 
-        MONGODB_URI="mongodb://localhost:27017/shoefify" // Only When Local Host
+        MONGODB_URI="mongodb://localhost:27017/shoefify" // Only When Local Host But i Prefer Mongodb Atlas as Same Github account
         NODEMAILER_EMAIL="give Your Website Email For Otp System"
         NODEMAILER_PASSWORD=""  // It is generated whwen you Create the otp system via App Setting 16 digit password
         RAZORPAY_KEY_ID=""     // When You verify this website from razorpay the they gives you API key
