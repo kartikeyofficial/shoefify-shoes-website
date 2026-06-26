@@ -11,8 +11,15 @@ Step(2): open the Dedicated Terminal of that Directory
 Step(3): Install NodeMailer for Email Otp system
 
         npm install nodemailer
+Step(4): Set up the Environment Variable Also (.env)
 
-Step(3): Run the React App
+        MONGODB_URI="mongodb://localhost:27017/shoefify" // Only When Local Host
+        NODEMAILER_EMAIL="give Your Website Email For Otp System"
+        NODEMAILER_PASSWORD=""  // It is generated whwen you Create the opt system via App Setting 16 digit password
+        RAZORPAY_KEY_ID=""     // When You verify this website from razorpay the they gives you API key
+        RAZORPAY_KEY_SECRET=""  // Secret API Razorpay Payment Key
+
+Step(5): Run the React App
 
         npm run dev 
 
