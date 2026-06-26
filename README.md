@@ -8,6 +8,10 @@ Step(2): open the Dedicated Terminal of that Directory
 
         npm install
 
+Step(3): Install NodeMailer for Email Otp system
+
+        npm install nodemailer
+
 Step(3): Run the React App
 
         npm run dev 
