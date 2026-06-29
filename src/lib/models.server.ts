@@ -80,3 +80,11 @@ const SupportMessageSchema = new mongoose.Schema({
 });
 
 export const SupportMessage = mongoose.models.SupportMessage || mongoose.model("SupportMessage", SupportMessageSchema);
+
+const WishlistSchema = new mongoose.Schema({
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  product_id: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+export const Wishlist = mongoose.models.Wishlist || mongoose.model("Wishlist", WishlistSchema);

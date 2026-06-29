@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HelpRouteImport } from './routes/help'
@@ -30,6 +31,11 @@ import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AccountOrdersRouteImport } from './routes/account.orders'
 
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/messages': typeof AdminMessagesRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/messages': typeof AdminMessagesRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/help': typeof HelpRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/wishlist': typeof WishlistRoute
   '/account/orders': typeof AccountOrdersRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/messages': typeof AdminMessagesRoute
@@ -210,6 +219,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/login'
     | '/signup'
+    | '/wishlist'
     | '/account/orders'
     | '/admin/categories'
     | '/admin/messages'
@@ -231,6 +241,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/login'
     | '/signup'
+    | '/wishlist'
     | '/account/orders'
     | '/admin/categories'
     | '/admin/messages'
@@ -253,6 +264,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/login'
     | '/signup'
+    | '/wishlist'
     | '/account/orders'
     | '/admin/categories'
     | '/admin/messages'
@@ -276,6 +288,7 @@ export interface RootRouteChildren {
   HelpRoute: typeof HelpRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  WishlistRoute: typeof WishlistRoute
   OrderOrderNumberRoute: typeof OrderOrderNumberRoute
   ProductSlugRoute: typeof ProductSlugRoute
   ShopCategoryRoute: typeof ShopCategoryRoute
@@ -284,6 +297,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -467,6 +487,7 @@ const rootRouteChildren: RootRouteChildren = {
   HelpRoute: HelpRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  WishlistRoute: WishlistRoute,
   OrderOrderNumberRoute: OrderOrderNumberRoute,
   ProductSlugRoute: ProductSlugRoute,
   ShopCategoryRoute: ShopCategoryRoute,

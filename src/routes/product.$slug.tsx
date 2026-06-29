@@ -5,6 +5,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { formatINR } from "@/lib/site";
 import { useCart } from "@/lib/cart-store";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
+import { Heart } from "lucide-react";
+import { toggleWishlistItem } from "@/lib/wishlist.functions";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/product/$slug")({
   head: ({ params }) => ({ meta: [{ title: `${params.slug} — Shoefify` }] }),
@@ -28,6 +32,9 @@ function ProductPage() {
   const [imgIdx, setImgIdx] = useState(0);
   const [loading, setLoading] = useState(true);
   const getProductBySlugFn = useServerFn(getProductBySlug);
+  const toggleWishlistFn = useServerFn(toggleWishlistItem);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     (async () => {
@@ -58,6 +65,23 @@ function ProductPage() {
     toast.success("Added to bag.");
   };
   const buyNow = () => { handleAdd(); nav({ to: "/checkout" }); };
+
+  const handleWishlist = async () => {
+    if (!product) return;
+    if (!user) {
+      toast.error("Please login to use the wishlist");
+      nav({ to: "/login" });
+      return;
+    }
+    try {
+      const res = await toggleWishlistFn({ data: { productId: product.id } });
+      if (res.added) toast.success("Added to wishlist");
+      else toast.success("Removed from wishlist");
+      queryClient.invalidateQueries({ queryKey: ["wishlist-count"] });
+    } catch (e: any) {
+      toast.error(e.message || "Failed to update wishlist");
+    }
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-12">
@@ -101,7 +125,12 @@ function ProductPage() {
 
           <div className="mt-8 flex flex-col gap-3">
             <button onClick={buyNow} className="bg-foreground py-4 text-sm uppercase tracking-widest text-background">Buy now</button>
-            <button onClick={handleAdd} className="border border-foreground py-4 text-sm uppercase tracking-widest">Add to bag</button>
+            <div className="flex gap-3">
+              <button onClick={handleAdd} className="flex-1 border border-foreground py-4 text-sm uppercase tracking-widest">Add to bag</button>
+              <button onClick={handleWishlist} className="flex-none border border-border p-4 hover:border-foreground transition-colors" aria-label="Toggle wishlist">
+                <Heart className="size-5" />
+              </button>
+            </div>
           </div>
 
           <div className="mt-10 border-t border-border pt-6 text-xs text-muted-foreground">Free shipping across India · 7-day easy returns</div>

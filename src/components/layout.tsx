@@ -1,16 +1,24 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ShoppingBag, User as UserIcon, Menu, X, LayoutGrid } from "lucide-react";
+import { ShoppingBag, User as UserIcon, Menu, X, LayoutGrid, Heart } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-store";
 import { SITE } from "@/lib/site";
+import { useServerFn } from "@tanstack/react-start";
+import { getWishlistCount } from "@/lib/wishlist.functions";
+import { useQuery } from "@tanstack/react-query";
 
 export function SiteHeader() {
   const { user, isAdmin } = useAuth();
   const count = useCart((s) => s.count());
   const [open, setOpen] = useState(false);
+  const getWishlistCountFn = useServerFn(getWishlistCount);
 
-
+  const { data: wishlistCount = 0 } = useQuery({
+    queryKey: ["wishlist-count", user?.id],
+    queryFn: () => getWishlistCountFn(),
+    enabled: !!user,
+  });
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
@@ -37,6 +45,14 @@ export function SiteHeader() {
           )}
           <Link to={user ? "/account" : "/login"} className="rounded-full p-2 hover:bg-secondary" aria-label="account">
             <UserIcon className="size-5" />
+          </Link>
+          <Link to="/wishlist" className="relative rounded-full p-2 hover:bg-secondary" aria-label="wishlist">
+            <Heart className="size-5" />
+            {wishlistCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-medium text-accent-foreground">
+                {wishlistCount}
+              </span>
+            )}
           </Link>
           <Link to="/cart" className="relative rounded-full p-2 hover:bg-secondary" aria-label="cart">
             <ShoppingBag className="size-5" />

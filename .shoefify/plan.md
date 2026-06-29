@@ -18,7 +18,7 @@ Premium shoe e-commerce site inspired by wearcomet.com. Warm minimal aesthetic, 
 
 **Admin account:** the email `rajputkartikey10@gmail.com` is the ONLY admin. A DB trigger on signup auto-assigns the `admin` role if the email matches; everyone else becomes `customer`. You sign in with the same OTP flow — no separate password screen, no hardcoded credentials in code.
 
-## 3. Database (Lovable Cloud)
+## 3. Database 
 
 - `profiles` (id, full_name, email, avatar_url, phone)
 - `user_roles` (user_id, role: `admin` | `customer`) + `has_role()` security-definer fn

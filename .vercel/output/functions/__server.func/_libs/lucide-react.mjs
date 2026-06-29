@@ -75,11 +75,21 @@ const createLucideIcon = (iconName, iconNode) => {
   Component.displayName = toPascalCase(iconName);
   return Component;
 };
-const __iconNode$9 = [
+const __iconNode$a = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
   ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }]
 ];
-const CircleCheck = createLucideIcon("circle-check", __iconNode$9);
+const CircleCheck = createLucideIcon("circle-check", __iconNode$a);
+const __iconNode$9 = [
+  [
+    "path",
+    {
+      d: "M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5",
+      key: "mvr1a0"
+    }
+  ]
+];
+const Heart = createLucideIcon("heart", __iconNode$9);
 const __iconNode$8 = [
   ["rect", { width: "7", height: "7", x: "3", y: "3", rx: "1", key: "1g98yp" }],
   ["rect", { width: "7", height: "7", x: "14", y: "3", rx: "1", key: "6d4xhi" }],
@@ -143,6 +153,7 @@ const __iconNode = [
 const X = createLucideIcon("x", __iconNode);
 export {
   CircleCheck as C,
+  Heart as H,
   LayoutGrid as L,
   Menu as M,
   Plus as P,

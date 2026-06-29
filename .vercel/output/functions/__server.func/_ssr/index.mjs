@@ -57,7 +57,7 @@ if (typeof globalThis.require === "undefined") {
 let serverEntryPromise;
 async function getServerEntry() {
   if (!serverEntryPromise) {
-    serverEntryPromise = import("./server-N1mLFSER.mjs").then((n) => n.f).then(
+    serverEntryPromise = import("./server-DRQnurSj.mjs").then((n) => n.f).then(
       (m) => m.default ?? m
     );
   }
